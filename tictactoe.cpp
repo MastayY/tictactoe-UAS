@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cstring>
+#include <sstream>
+#include <iomanip>
 #include <windows.h>
 #include <limits>
 #include <cstdlib>
@@ -7,7 +8,7 @@
 
 using namespace std;
 
-void displayHeader(string board[9]) {
+void displayHeader() {
 	cout << "======================================" << endl;
     cout << "            TicTacToe Games           " << endl;
     cout << "======================================" << endl;
@@ -15,14 +16,14 @@ void displayHeader(string board[9]) {
     cout << "\nKETERANGAN :\nPlayer 1 : 'X'\nPlayer 2 : 'O'" << endl;
 }
 
-void displayMenu(string board[9]) {
+void displayMenu() {
 	cout << "\n============== [ MENU ] ==============" << endl;
 	cout << "\t1. Main\n\t2. Leaderboard\n\t3. Cari Detail Permainan\n\t4. Exit" << endl;
 	cout << "======================================\n" << endl;
 }
 
-void displayBoard(string board[9]) {
-	cout << "\n======================================\n" << endl;
+void displayBoard(string board[9], int round, int maxRound) {
+	cout << "\n========= [ RONDE : " << round << " / " << maxRound << " ] =========\n" << endl;
 
     cout << "\t       |     |     " << endl;
     cout << "\t    " << board[0] << "  |  " << board[1] << "  |  " << board[2] << endl;
@@ -44,26 +45,24 @@ bool isMovesLeft(string board[9])
             return true; 
         } 
     return false; 
-} 
-
+}
 
 
 int main() {
     string board[9] = {" ", " ", " ", " ", " ", " ", " ", " ",  " "};
     int turn = 1;
     int index = 0;
-    int score = 0;
+    int score[10][3] = {{0, 0, 0}, {1, 0, 0}, {2, 0, 0}, {3, 0, 0}, {4, 0, 0}, {5, 0, 0}, {6, 0, 0}, {7, 0, 0}, {8, 0, 0}, {9, 0, 0}};
     int round = 1;
-    int MAX_ROUND = 2;
-    string leaderboard[10][5];
+    int MAX_ROUND = 3;
+    string leaderboard[10][6];
     
     while(true) {
-    	string username[2] = {" ", " "};
-    	int point[2] = {0, 0};
+    	string username[2] = {"None", "None"};
     	int menuChoice = 0;
     	
-	    displayHeader(board);
-	    displayMenu(board);
+	    displayHeader();
+	    displayMenu();
 	    cout << "Pilih Menu\t: ";
 	    cin >> menuChoice;
 	    
@@ -82,40 +81,67 @@ int main() {
 		        int choice;
 		
 		        if((board[0] == "X" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "X" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "X" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "X" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "X" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "X" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "X" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "X" && board[2] == board[4] && board[4] == board[6])) {
-		            displayHeader(board);
-					displayBoard(board);
+		            displayHeader();
+					displayBoard(board, round, MAX_ROUND);
 		            cout << username[0] << " Menang\n" << endl;
-		            point[0] += 1;
-		            index += 1;
+					score[index][1] += 1;
+					round += 1;
+					turn = 1;
+
+					for(int i = 0; i < 9; i++) {
+		            	board[i] = " ";
+		        	}
 		
 		            Sleep(1500);
 		            system("cls");
-		            break;
+
+		            if (round > MAX_ROUND) {
+						round = 1;
+						break;
+					}
 		            
 		        } else if((board[0] == "O" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "O" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "O" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "O" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "O" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "O" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "O" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "O" && board[2] == board[4] && board[4] == board[6])) {
-		            displayHeader(board);
-					displayBoard(board);
+		            displayHeader();
+					displayBoard(board, round, MAX_ROUND);
 		            cout << username[1] << " Menang\n" << endl;
-		            point[1] += 1;
-		            index += 1;
+					score[index][2] += 1;
+					round += 1;
+					turn = 1;
+
+					for(int i = 0; i < 9; i++) {
+		            	board[i] = " ";
+		        	}
 		
 		            Sleep(1500);
 		            system("cls");
-		            break;
+		            
+					if (round > MAX_ROUND) {
+						round = 1;
+						break;
+					}
 		
 		        } else if(!isMovesLeft(board)) {
-		            displayHeader(board);
-					displayBoard(board);
+		            displayHeader();
+					displayBoard(board, round, MAX_ROUND);
 		            cout << "Seimbang\n" << endl;
-		            index += 1;
+					round += 1;
+					turn = 1;
+
+					for(int i = 0; i < 9; i++) {
+		            	board[i] = " ";
+		        	}
 		            
 		            Sleep(1500);
 		            system("cls");
-		            break;
+		            
+					if (round > MAX_ROUND) {
+						round = 1;
+						break;
+					}
 		        }
 		        
-		        displayHeader(board);
-		        displayBoard(board);
+		        displayHeader();
+		        displayBoard(board, round, MAX_ROUND);
 		
 		        if(turn == 1) {
 		            cout << username[0] << " masukkan nomor index papan : ";
@@ -135,12 +161,14 @@ int main() {
 		                        turn = 2;
 		                    } else {
 		                        cout << "\n[ERROR] Pilihan sudah diisi\n" << endl;
+								Sleep(1500);
 		                    }
 		
 		                    break;
 		
 		                default:
 		                    cout << "\n[ERROR] Pilih papan dari 1-9\n" << endl;
+							Sleep(1500);
 		                    break;
 		            }
 		        } else {
@@ -161,52 +189,155 @@ int main() {
 		                        turn = 1;
 		                    } else {
 		                        cout << "\n[ERROR] Pilihan sudah diisi\n" << endl;
+								Sleep(1500);
 		                    }
 		
 		                    break;
 		
 		                default:
 		                    cout << "\n[ERROR] Pilih papan dari 1-9\n" << endl;
+							Sleep(1500);
 		                    break;
 		        	}
 		        }
 		
 		        system("cls");
 			}
-			string gameID = to_string(index);
-			string p1Point = to_string(point[0]);
-			string p2Point = to_string(point[1]);
+
+			index += 1;
+
+			// menentukan winner
+			string winner = "Draw";
+
+			if (score[index - 1][1] > score[index - 1][2]) {
+				winner = username[0];
+			} else if (score[index - 1][1] < score[index - 1][2]) {
+				winner = username[1];
+			}
+
+			// Mengubah integer ke string
+			int IDGame = index;
+			string gameID, p1Point, p2Point;
+			stringstream convert;
+
+			convert << IDGame;
+			gameID = convert.str();
+			convert.str("");  
+
+			convert << score[index - 1][1];
+			p1Point = convert.str();
+			convert.str("");
+
+			convert << score[index - 1][2];
+			p2Point = convert.str();
 			
 			leaderboard[index - 1][0] = gameID;
 			leaderboard[index - 1][1] = username[0];
 			leaderboard[index - 1][2] = p1Point;
 			leaderboard[index - 1][3] = username[1];
 			leaderboard[index - 1][4] = p2Point;
-			
-			cout << "ID : " << leaderboard[index - 1][0] << endl;
-		    cout << leaderboard[index - 1][1] << endl;
-		    cout << leaderboard[index - 1][2] << endl;
-		    cout << leaderboard[index - 1][3] << endl;
-		    cout << leaderboard[index - 1][4] << endl;
-		    
-	    } else if (menuChoice == 2) {
-	    	cout << "Sistem sorting";
+			leaderboard[index - 1][5] = winner;
+
+		} else if (menuChoice == 2) {
+			system("cls");
+			// Sorting system
+			for (int i = 0; i < 10; i++) {
+				if (i >= index || i < 0) {
+					break;
+				}
+
+				for (int j = 0; j < 10 - i; j++) {
+					if (j >= index || j < 0) {
+						break;
+					}
+
+					int max1 = score[j][1] > score[j][2] ? score[j][1] : score[j][2];
+					int max2 = score[j + 1][1] > score[j + 1][2] ? score[j + 1][1] : score[j + 1][2];
+
+					if (max1 < max2) {
+						
+						for (int k = 0; k < 2; k++) {
+							int temp = score[j][k + 1];
+							score[j][k + 1] = score[j + 1][k + 1];
+							score[j + 1][k + 1] = temp;
+						}
+
+						int tempId = score[j][0];
+						score[j][0] = score[j + 1][0];
+						score[j + 1][0] = tempId;
+					}
+				}
+			}
+
+			// Display the top 5 players
+			cout << "\nTop 5 Players:\n";
+			cout << "-----------------------------------------\n";
+			cout << "|  Rank  |    Username    |    Score    |\n";
+			cout << "-----------------------------------------\n";
+
+			for (int i = 0; i < 5; i++) {
+				// Check if i is within bounds
+				if (i < index) {
+					cout << "|" << setw(4) << i + 1 << setw(5) << "|" << setw(8) << leaderboard[score[i][0]][5] << setw(9) << "|" << setw(6) << (score[i][1] > score[i][2] ? score[i][1] : score[i][2]) << setw(9) << "|\n";
+				} else {
+					cout << "|" << setw(4) << i + 1 << setw(5) << "|" << setw(9) << "No Data" << setw(8) <<"|" << setw(8) << "No Data" << setw(7) << "|\n";
+				}
+			}
+
+			cout << "-----------------------------------------\n" << endl;
+
+			Sleep(1500);
+
 		} else if (menuChoice == 3) {
-			int search;
+			string search, searchResult[10][6];
+			int searchIndex = 0;
 			
-			cout << "Search berdasarkan index : ";
+			cout << "Search berdasarkan username : ";
 			cin >> search;
 			
 			for(int i = 0; i < 10; i++) {
-				if(stoi(leaderboard[i][0])) {
-					cout << "\nDitemukan\n" << endl;
+				if(leaderboard[i][1] == search) {
+					searchResult[searchIndex][0] = leaderboard[i][0];
+					searchResult[searchIndex][1] = leaderboard[i][1];
+					searchResult[searchIndex][2] = leaderboard[i][2];
+					searchResult[searchIndex][3] = leaderboard[i][3];
+					searchResult[searchIndex][4] = leaderboard[i][4];
+					searchResult[searchIndex][5] = leaderboard[i][5];
+					
+					searchIndex++;
+					
+				} else if (leaderboard[i][3] == search) {
+					searchResult[searchIndex][0] = leaderboard[i][0];
+					searchResult[searchIndex][1] = leaderboard[i][1];
+					searchResult[searchIndex][2] = leaderboard[i][2];
+					searchResult[searchIndex][3] = leaderboard[i][3];
+					searchResult[searchIndex][4] = leaderboard[i][4];
+					searchResult[searchIndex][5] = leaderboard[i][5];
+					
+					searchIndex++;
+				} else if (leaderboard[i][0].empty()) {
 					break;
-				} else {
-					cout << "\ndata tidak ada\n" << endl;
-				}
+				} 
 			}
+
+			system("cls");
+			
+			cout << "================================= SEARCH  RESULT ================================" << endl;
+			cout << "---------------------------------------------------------------------------------" << endl;
+			cout << "| ID |   Username 1   |   Point 1   |   Username 2   |   Point 2   |   Winner   |" << endl;
+			cout << "---------------------------------------------------------------------------------" << endl;
+			
+			for(int i = 0; i < index; i++) {
+				cout << "|" << setw(2) << searchResult[i][0] << setw(3) << "|" << setw(8) << searchResult[i][1] << setw(9) << "|" << setw(7) << searchResult[i][2] << setw(7) << "|" << setw(10) << searchResult[i][3] << setw(7) << "|" << setw(7) << searchResult[i][4] << setw(7) << "|" << setw(7) << searchResult[i][5] << setw(6) << "|" << endl;
+			}
+			
+			cout << "---------------------------------------------------------------------------------\n\n" << endl;
+
+			Sleep(1500);
 		} else if(menuChoice == 4) {
 			break;
 		}
 	}
 }
+
+
