@@ -310,7 +310,7 @@ int main() {
 			cout << "| ID |   Username 1   |   Point 1   |   Username 2   |   Point 2   |   Winner   |" << endl;
 			cout << "---------------------------------------------------------------------------------" << endl;
 			
-			for(int i = 0; i < index; i++) {
+			for(int i = 0; i < searchIndex; i++) {
 				cout << "|" << setw(2) << searchResultInt[i][0] << setw(3) << "|" << setw(8) << searchResult[i][0] << setw(9) << "|" << setw(7) << searchResultInt[i][1] << setw(7) << "|" << setw(10) << searchResult[i][1] << setw(7) << "|" << setw(7) << searchResultInt[i][2] << setw(7) << "|" << setw(7) << searchResult[i][2] << setw(6) << "|" << endl;
 			}
 			
