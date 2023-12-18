@@ -1,8 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <windows.h>
-#include <cstdlib>
-#include <time.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -34,6 +33,20 @@ void displayBoard(string board[9], int round, int maxRound) {
     cout << "\t       |     |     " << endl << endl;
 
     cout << "======================================\n" << endl;
+}
+
+int checkWinner(string board[9]) {
+	if((board[0] == "X" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "X" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "X" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "X" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "X" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "X" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "X" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "X" && board[2] == board[4] && board[4] == board[6])) {
+		return 1;
+	} 
+	
+	else if ((board[0] == "O" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "O" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "O" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "O" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "O" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "O" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "O" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "O" && board[2] == board[4] && board[4] == board[6])) {
+		return 2;
+	}
+
+	else {
+		return 0;
+	}
 }
 
 bool isMovesLeft(string board[9]) 
@@ -82,7 +95,7 @@ int main() {
 			while(true) {
 				int choice;
 		
-				if((board[0] == "X" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "X" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "X" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "X" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "X" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "X" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "X" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "X" && board[2] == board[4] && board[4] == board[6])) {
+				if(checkWinner(board) == 1) {
 					displayHeader();
 					displayBoard(board, round, MAX_ROUND);
 					cout << tempUsername[0] << " Menang\n" << endl;
@@ -102,7 +115,7 @@ int main() {
 						break;
 					}
 				
-				} else if((board[0] == "O" && board[0] == board[1] && board[1] == board[2]) || ( board[3] == "O" &&board[3] == board[4] && board[4] == board[5]) || (board[6] == "O" && board[6] == board[7] && board[7] == board[8]) || (board[0] == "O" && board[0] == board[3] && board[3] == board[6]) || (board[1] == "O" && board[1] == board[4] && board[4] == board[7]) || (board[2] == "O" && board[2] == board[5] && board[5] == board[8]) || (board[0] == "O" && board[0] == board[4] && board[4] == board[8]) || (board[2] == "O" && board[2] == board[4] && board[4] == board[6])) {
+				} else if(checkWinner(board) == 2) {
 					displayHeader();
 					displayBoard(board, round, MAX_ROUND);
 					cout << tempUsername[1] << " Menang\n" << endl;
@@ -122,7 +135,7 @@ int main() {
 						break;
 					}
 		
-				} else if(!isMovesLeft(board)) {
+				} else if(checkWinner(board) == 0 && !isMovesLeft(board)) {
 					displayHeader();
 					displayBoard(board, round, MAX_ROUND);
 					cout << "Seimbang\n" << endl;
@@ -274,12 +287,23 @@ int main() {
 			string search, searchResult[10][3];
 			int searchResultInt[10][3];
 			int searchIndex = 0;
+
+			system("cls");
 			
 			cout << "Search berdasarkan username : ";
 			cin >> search;
+
+			// to lowercase
+			transform(search.begin(), search.end(), search.begin(), ::tolower);
 			
 			for(int i = 0; i < 10; i++) {
-				if(username[i][0] == search) {
+				string lowFirstUsername = username[i][0];
+				string lowSecondUsername = username[i][1];
+
+				transform(lowFirstUsername.begin(), lowFirstUsername.end(), lowFirstUsername.begin(), ::tolower);
+				transform(lowSecondUsername.begin(), lowSecondUsername.end(), lowSecondUsername.begin(), ::tolower);
+
+				if(lowFirstUsername == search) {
 					searchResultInt[searchIndex][0] = i;
 					searchResult[searchIndex][0] = username[i][0];
 					searchResultInt[searchIndex][1] = point[i][0];
@@ -289,7 +313,7 @@ int main() {
 					
 					searchIndex++;
 					
-				} else if (username[i][1] == search) {
+				} else if (lowSecondUsername == search) {
 					searchResultInt[searchIndex][0] = i;
 					searchResult[searchIndex][0] = username[i][0];
 					searchResultInt[searchIndex][1] = point[i][0];
@@ -302,23 +326,30 @@ int main() {
 					break;
 				} 
 			}
-
-			system("cls");
 			
-			cout << "================================= SEARCH  RESULT ================================" << endl;
+			cout << "\n                                 SEARCH  RESULT                                  " << endl;
 			cout << "---------------------------------------------------------------------------------" << endl;
 			cout << "| ID |   Username 1   |   Point 1   |   Username 2   |   Point 2   |   Winner   |" << endl;
 			cout << "---------------------------------------------------------------------------------" << endl;
-			
-			for(int i = 0; i < searchIndex; i++) {
-				cout << "|" << setw(2) << searchResultInt[i][0] << setw(3) << "|" << setw(8) << searchResult[i][0] << setw(9) << "|" << setw(7) << searchResultInt[i][1] << setw(7) << "|" << setw(10) << searchResult[i][1] << setw(7) << "|" << setw(7) << searchResultInt[i][2] << setw(7) << "|" << setw(7) << searchResult[i][2] << setw(6) << "|" << endl;
+
+			if(searchIndex == 0) {
+				cout << "|                             DATA TIDAK DITEMUKAN                              |" << endl;
+			} else {
+				for(int i = 0; i < searchIndex; i++) {
+					cout << "|" << setw(2) << searchResultInt[i][0] << setw(3) << "|" << setw(8) << searchResult[i][0] << setw(9) << "|" << setw(7) << searchResultInt[i][1] << setw(7) << "|" << setw(10) << searchResult[i][1] << setw(7) << "|" << setw(7) << searchResultInt[i][2] << setw(7) << "|" << setw(7) << searchResult[i][2] << setw(6) << "|" << endl;
+				}
 			}
 			
-			cout << "---------------------------------------------------------------------------------\n\n" << endl;
+			
+			cout << "---------------------------------------------------------------------------------\n\n\n" << endl;
 
 			Sleep(1500);
 		} else if(menuChoice == 4) {
 			break;
+		} else {
+			cout << "\n[ERROR] Masukkan index menu dari 1 - 4";
+			Sleep(1500);
+			system("cls");
 		}
 	}
 }
